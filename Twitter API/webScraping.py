@@ -1,3 +1,3 @@
 # Archivo prueba de web scraping
 
-import numpy as  np
+print("Prueba 1")
