@@ -1,7 +1,3 @@
-# This is a script who works to get the data of Twitter's users from a list 
-# created by Mateo and save the data in the CSV called dataUsers.csv
-
-
 #Libraries
 import tweepy
 import configparser
@@ -20,7 +16,7 @@ def getUsers(): # Get the list of Users given in the DB
 def configurateTokensKeys(): # Configuration for the tokens and keys given on Twitter
     
     config = configparser.RawConfigParser()
-    config.read('Laboratorio1-Github/Twitter API/config.ini') # Read the config doc with the Keys and tokens
+    config.read('Laboratorio1-Github/Twitter_API/config.ini') # Read the config doc with the Keys and tokens
 
     consumer_key = config["twitter"]["api_key"]
     consumer_secret = config['twitter']['api_key_secret']
@@ -70,26 +66,10 @@ client = tweepy.Client(bearer_token = bear)
 # Do the scrapping of the tweets for each user
 users_doc = getUsers()
 
-# <---  IGNORE THIS IF WE WORK WITH THE API V2 --->
-
-# < -- FINISH IGNORE -- >
-
-# Create and write in the csv with the data recolected 
-'''
-head = ['Create at ','Text','Author_id']
-with open('./DataScrapper/dataUsers.csv','w',newline = "" ) as file :
-    writer = csv.writer(file)
-    writer.writerow(head)
-
-# Get Data from Users
-'''
 client = tweepy.Client(bear)
 
-# Iterate the data for each account in the doc usersTwitter created by Mateo
-start_time = "2022-04-22T20:00:31Z"
-end_time = "2022-08-22T20:00:31Z"
-
 for username  in users_doc:
+    
     query = "from:" + username
 
     # Get the last 100 tweets
@@ -112,9 +92,10 @@ for username  in users_doc:
 
         with open('Laboratorio1-Github/data/Tweets.csv','w',encoding="UTF8",newline = "" ) as file :
             writer = csv.writer(file)
+            writer.writerows(str('Tweets obtenidos del usuario '+ username))
             writer.writerows(rows)
     except:
-        print("No se pudo con" + username)
+        print("No se pudo con " + username)
 
 
 print("<-- Finished -->")
