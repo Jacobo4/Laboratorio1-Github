@@ -91,7 +91,7 @@ for username  in users_doc:
 
 json_object = json.dumps(dictionary,indent = 4)
 
-fecha_scraping = str(str(tweet.created_at).split()[0])
+fecha_scraping = str(str(tweet.created_at).split()[0]) + str("_"+str(tweet.created_at).split()[1].replace(":","_").replace("+","_"))
 with open("data/"+fecha_scraping+".json", "w") as outfile:
     
     outfile.write(json_object)
