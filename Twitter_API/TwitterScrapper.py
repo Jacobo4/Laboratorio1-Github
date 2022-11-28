@@ -3,9 +3,10 @@ import tweepy
 import configparser
 import csv
 import pandas as pd
+import json
 
 def getUsers(): # Get the list of Users given in the DB
-    doc = open("Laboratorio1-Github/data/UsersTwitter.txt","r")
+    doc = open("data/UsersTwitter.txt","r")
     users = doc.readlines()
     users_list = []
     for i in users:
@@ -16,7 +17,7 @@ def getUsers(): # Get the list of Users given in the DB
 def configurateTokensKeys(): # Configuration for the tokens and keys given on Twitter
     
     config = configparser.RawConfigParser()
-    config.read('Laboratorio1-Github/Twitter_API/config.ini') # Read the config doc with the Keys and tokens
+    config.read('Twitter_API/config.ini') # Read the config doc with the Keys and tokens
 
     consumer_key = config["twitter"]["api_key"]
     consumer_secret = config['twitter']['api_key_secret']
@@ -67,9 +68,9 @@ client = tweepy.Client(bearer_token = bear)
 users_doc = getUsers()
 
 client = tweepy.Client(bear)
-
+dictionary = {}
 for username  in users_doc:
-    
+    temp_dict = {}
     query = "from:" + username
 
     # Get the last 100 tweets
@@ -78,24 +79,19 @@ for username  in users_doc:
                                     user_fields = ["name","username"],
                                     max_results = 100,
                                     expansions='author_id')
-
-    # Create a csv with the data recolected
-
-    try:
-        rows = []
+    #if tweets.data is not type(NoneObject):
+    if tweets.data is not None :
         for tweet in tweets.data:
-            row = []
-            row.append(tweet.created_at)
-            row.append(tweet.text)
-            row.append(tweet.author_id)
-            rows.append(row)
+            temp_dict['date'] = str(tweet.created_at)
+            temp_dict['tweet'] = tweet.text
+            
+            
+    dictionary[username] = temp_dict
+            
 
-        with open('Laboratorio1-Github/data/Tweets.csv','w',encoding="UTF8",newline = "" ) as file :
-            writer = csv.writer(file)
-            writer.writerows(str('Tweets obtenidos del usuario '+ username))
-            writer.writerows(rows)
-    except:
-        print("No se pudo con " + username)
+json_object = json.dumps(dictionary,indent = 4)
 
-
-print("<-- Finished -->")
+fecha_scraping = str(str(tweet.created_at).split()[0])
+with open("data/"+fecha_scraping+".json", "w") as outfile:
+    
+    outfile.write(json_object)
